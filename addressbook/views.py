@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 
-from .forms import FindContactsForm
+#from .forms import FindContactsForm
 from .models import Abonent, Phone, Email, Note, Tag
 from .queries import read_abonents, get_date_month_day
 from .creating import create_phones, create_emails, create_note
@@ -213,7 +213,7 @@ def find_contacts(request):
     (каждая запись - ссылка, при нажатии на которую осуществляется переход на страницу 
     записи с детальной информацией)
     """
-    if request.method == 'POST':
+    '''if request.method == 'POST':
         form = FindContactsForm(request.POST)
         if form.is_valid():
             res = form.cleaned_data
@@ -228,4 +228,5 @@ def find_contacts(request):
     else:
         form = FindContactsForm()
 
-    return render(request, "addressbook/find-contacts.html", {'form': form})
+    return render(request, "addressbook/find-contacts.html", {'form': form})'''
+    pass
