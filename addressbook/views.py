@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 
-from .forms import AbonentEditForm, FindContactsForm
+from .forms import FindContactsForm
 from .models import Abonent, Phone, Email, Note, Tag
 from .queries import read_abonents, get_date_month_day
 from .creating import create_phones, create_emails, create_note
