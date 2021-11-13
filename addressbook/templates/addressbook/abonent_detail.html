@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style type="text/css">
+.blok {
+  max-height: 300px;
+  background: rgb(211, 211, 211);
+  color: rgb(0, 0, 0);
+  overflow-y: auto;
+  margin: 20px 0;
+}
+</style>
+
+{% block main_title %}
+Подробнее об {{abonent.name}}
+{% endblock %}
+
+<a href='{% url "addressbook:edit-contact" abonent.pk %}'>
+  <button type="button" class="btn btn-outline-primary">Изменить данные контакта</button>
+</a>
+
+<table class="table">
+  <tr> 
+    <td>Имя</td>
+    <td>{{abonent.name}}</td>
+  </tr>
+  <tr>
+    <td> День рождения </td>
+    <td>{{abonent.birthday}}</td>
+  </tr>
+  <tr>
+    <td> Адрес </td>
+    <td>{{abonent.address}}</td>
+  </tr>
+  <tr>
+    <td> Телефоны </td>
+    <td>
+    {% for phone in phones %}
+      <span> {{phone.phone}}; </span>
+    {%endfor%}
+    </td>
+  </tr>
+  <tr>
+    <td> Emails </td>
+    <td>
+    {% for email in emails %}
+    <span> {{email.email}}; </span>
+    {%endfor%}
+    </td>
+  </tr>
+  <tr>
+    <td> Заметки </td>
+    <td></td>
+  </tr>
+</table>
+
+
+<div class="blok">
+
+  <table class="table">
+{% for note in notes %}
+    <tr>
+  <td> {{note.date}}</td>
+  <td> {{note.note}}</td>
+  {% for tag in note.tags.all %}
+    <td> #{{tag.tag}}</td>
+  {% endfor %}
+      </tr>
+{% endfor %}
+</table>
+
+</div>
+
+
+
+  <form action="{% url 'addressbook:delete-contact' abonent.pk %}" method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger">Удалить контакт</button>
+  </form>
+
+{% endblock %}

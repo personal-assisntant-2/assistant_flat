@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}News{% endblock %}
+
+{% block main_title %}Cryptocurrency rate for today{% endblock %}
+
+{% block content %}
+    <div class="table-wrapper">
+        <table border="1" bordercolor="lightgrey" class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>Source</th>
+                <th><div class="wrap-th">
+                    <img height="30" src="https://myfin.by/images/cryptoCurrency/btc.png" alt="">
+                    <span class="wrap-th__text">
+                        <span>Bitcoin,</span>
+                        <span>BTC</span>
+                    </span>
+                </div></th>
+                <th><div class="wrap-th">
+                    <img height="30" src="https://myfin.by/images/cryptoCurrency/eth.png" alt="">
+                    <span class="wrap-th__text">
+                        <span>Ethereum,</span>
+                        <span>ETH</span>
+                    </span>
+                </div></th>
+                <th><div class="wrap-th">
+                    <img height="30" src="https://myfin.by/images/cryptoCurrency/bch.jpg" alt="">
+                    <span class="wrap-th__text">
+                        <span>Bitcoin Cash,</span>
+                        <span>BCH</span>
+                    </span>
+                </div></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>myfin.by</td>
+                {% if not rates_myfin.bitcoin %}
+                <td>No data</td>
+                {% else %}
+                <td>{{ rates_myfin.bitcoin }} $</td>
+                {% endif %}
+
+                {% if not rates_myfin.ethereum %}
+                <td>No data</td>
+                {% else %}
+                <td>{{ rates_myfin.ethereum }} $</td>
+                {% endif %}
+
+                {% if not rates_myfin.bitcoin_cash %}
+                <td>No data</td>
+                {% else %}
+                <td>{{ rates_myfin.bitcoin_cash }} $</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>bitinfocharts.com</td>
+                {% if not rates_bitinfo.bitcoin %}
+                <td>No data</td>
+                {% else %}
+                <td>{{ rates_bitinfo.bitcoin }} $</td>
+                {% endif %}
+
+                {% if not rates_bitinfo.ethereum %}
+                <td>No data</td>
+                {% else %}
+                <td>{{ rates_bitinfo.ethereum }} $</td>
+                {% endif %}
+
+                {% if not rates_bitinfo.bitcoin_cash %}
+                <td>No data</td>
+                {% else %}
+                <td>{{ rates_bitinfo.bitcoin_cash }} $</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>bitstat.top</td>
+                {% if not rates_bitstat.bitcoin %}
+                <td>No data</td>
+                {% else %}
+                <td>{{ rates_bitstat.bitcoin }} $</td>
+                {% endif %}
+
+                {% if not rates_bitstat.ethereum %}
+                <td>No data</td>
+                {% else %}
+                <td>{{ rates_bitstat.ethereum }} $</td>
+                {% endif %}
+
+                {% if not rates_bitstat.bitcoin_cash %}
+                <td>No data</td>
+                {% else %}
+                <td>{{ rates_bitstat.bitcoin_cash }} $</td>
+                {% endif %}
+            </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}File Manager{% endblock %}
+
+{% block main_title %}File Manager{% endblock %}
+
+{% block content %}
+<hr>
+<form action="{% url 'file_manager:file' %}" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input name='upload' type="submit" value="Upload" class="btn btn-success">
+</form>
+
+{% if messages %}
+<span {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+</span>
+{% endif %}
+<hr>
+<div class="mt-5">
+
+    <form action="{% url 'file_manager:file' %}" method="get">
+        <span>Sort by category</span>
+        <select name="category_field">
+            <option value="">All categories</option>
+            {% for category in categories %}
+            {% if category == selected_category %}
+            <option value="{{category}}" selected>{{ category }}</option>
+            {% else %}
+            <option value="{{category}}">{{ category }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <input type="submit" value="Select" class="btn btn-success">
+    </form>
+
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for file in list_files %}
+        <tr>
+            <td valign="middle">{{ file.name }}</td>
+            <td valign="middle">{{ file.size }}</td>
+            <td>
+                <form action="{% url 'file_manager:download' file.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-success">Download</button>
+                </form>
+            </td>
+            <td>
+                <form action="{% url 'file_manager:delete' file.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

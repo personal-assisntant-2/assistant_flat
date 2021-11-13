@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Hello{% endblock %}
+
+{% block main_title %}Register{% endblock %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+    {{form}}
+    <input class="btn btn-success" type="submit" value="Register">
+</form>
+
+<a class="btn btn-link mt-3" href="{% url 'login' %}">Back to login</a>
+{% endblock %}
