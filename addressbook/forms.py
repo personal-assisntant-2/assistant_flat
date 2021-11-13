@@ -3,7 +3,7 @@ from datetime import date
 from .models import Abonent, Tag
 
 
-class AbonentForm(forms.ModelForm):
+'''class AbonentForm(forms.ModelForm):
     name = forms.CharField(label='Имя')
     birthday = forms.DateField(
         label='день рождения', widget=forms.widgets.SelectDateWidget())
@@ -34,3 +34,4 @@ class FindContactsForm(forms.Form):
         years=[a for a in range(year_max - 90, year_max)]), required=False)
     date_stop = forms.DateField(label='дата стоп', widget=forms.SelectDateWidget(
         years=[a for a in range(year_max - 90, year_max)]), required=False)
+'''
