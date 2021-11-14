@@ -148,7 +148,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # USED WHILE CREATE NEW USER, LOGIN, TO REDIRECT TO <dashboard>
 # WITH CHANGING NAME WHILE GREETINGS
-LOGIN_REDIRECT_URL = '/addressbook/birthdays'
+LOGIN_REDIRECT_URL = '/addressbook/birthdays/'
 
 # THE SAME AS ABOVE BUT FOR LOGOUT
 LOGOUT_REDIRECT_URL = 'dashboard'

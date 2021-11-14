@@ -1,7 +1,6 @@
 import mimetypes
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -53,7 +52,7 @@ def file_download_view(request, file_id):
     """
     Responsible for downloading a file, whose id = file_id.
     """
-    file = get_object_or_404(UploadedFiles, pk=file_id)
+    file = get_object_or_404(UploadedFiles, pk=file_id, user=request.user)
 
     # Formation of an HTTP response
     response = HttpResponse(file.file)
@@ -71,7 +70,7 @@ def file_download_view(request, file_id):
 
 @login_required
 def file_delete_view(request, file_id):
-    file = get_object_or_404(UploadedFiles, pk=file_id)
+    file = get_object_or_404(UploadedFiles, pk=file_id, user=request.user)
     file.delete()
     return redirect(reverse('file_manager:file'))
 

@@ -13,20 +13,3 @@ class UploadFileForm(forms.Form):
     )
 
 
-# CATEGORY_CHOICES = (
-#     ('', ''),
-#     ('audio', 'Audios'),
-#     ('archive', 'Archives'),
-#     ('doc', 'Documents'),
-#     ('img', 'Images'),
-#     ('video', 'Video'),
-#     ('others', 'Others')
-# )
-#
-#
-# class CategoryForm(forms.Form):
-#     category_field = forms.ChoiceField(
-#         choices=CATEGORY_CHOICES,
-#         required=False,
-#     )
-
