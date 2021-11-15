@@ -4,6 +4,7 @@
 @login_required 
  @login_required(login_url='auth:login')
 '''
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
@@ -11,6 +12,8 @@ from django.template import loader
 from django.views.generic.detail import DetailView
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django import forms
+from django.contrib import messages
 
 
 from .forms import AbonentEditForm, FindContactsForm
@@ -43,6 +46,7 @@ class AbonentDetailView(DetailView):
             abonent_id=context['abonent'].id)
         return context
 
+
 @login_required
 def add_contact(request):
     ''' form for adding a contact
@@ -68,31 +72,43 @@ def add_contact(request):
         if not data['name'][0]:
             return redirect(reverse('addressbook:add-contact'))
 
-        # создается запись в Аbonent
-        abonent = Abonent.objects.create(
-            owner_id=request.user.id,
-            name=data['name'][0],
-            address=data['address'][0])
-        if data['birthday'][0]:
-            abonent.birthday = data['birthday'][0]
-            abonent.save()
+        # валидация введенных emails
+        f = forms.EmailField()
+        try:
+            for email in data['email']:
+                if email:
+                    f.clean(email)
+        except ValidationError as error:
+            messages.add_message(request, messages.ERROR, 'Enter a valid email address.')
+            context.update(data)
+            return render(request, 'addressbook/add_contact.html', context)
 
-        # создаются записи в Phone
-        create_phones(abonent=abonent,
-                    out_phones=data['phone'] )
-        
-        # создаются записи в Email
-        create_emails(abonent=abonent,
-                    out_emails=data['email'] )
-        
-        # Добавляем заметку в таблицу  Note
-        create_note(abonent=abonent,
-                        out_note=data['note'][0], 
+        else:
+            # создается запись в Аbonent
+            abonent = Abonent.objects.create(
+                owner_id=request.user.id,
+                name=data['name'][0],
+                address=data['address'][0])
+            if data['birthday'][0]:
+                abonent.birthday = data['birthday'][0]
+                abonent.save()
+
+            # создаются записи в Phone
+            create_phones(abonent=abonent,
+                          out_phones=data['phone'])
+
+            # создаются записи в Email
+            create_emails(abonent=abonent,
+                          out_emails=data['email'])
+
+            # Добавляем заметку в таблицу  Note
+            create_note(abonent=abonent,
+                        out_note=data['note'][0],
                         in_tags=context['tags'],
-                        out_tags=data['tag']  )
+                        out_tags=data['tag'])
 
-        return redirect(reverse('addressbook:detail', kwargs= {'pk' : abonent.id }))
-    
+            return redirect(reverse('addressbook:detail', kwargs={'pk': abonent.id}))
+
     return render(request, 'addressbook/add_contact.html', context)
 
 @login_required

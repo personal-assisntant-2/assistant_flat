@@ -12,10 +12,11 @@
     <input name='upload' type="submit" value="Upload" class="btn btn-success">
 </form>
 
-{% if messages %}
-<span {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
-</span>
-{% endif %}
+{% for message in messages %}
+    <li
+            {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+    </li>
+{% endfor %}
 <hr>
 <div class="mt-5">
 
@@ -40,6 +41,7 @@
         <tr>
             <th>Name</th>
             <th>Size</th>
+            <th>Category</th>
             <th></th>
         </tr>
         </thead>
@@ -48,6 +50,7 @@
         <tr>
             <td valign="middle">{{ file.name }}</td>
             <td valign="middle">{{ file.size }}</td>
+            <td valign="middle">{{ file.category }}</td>
             <td>
                 <form action="{% url 'file_manager:download' file.id %}" method="post">
                     {% csrf_token %}
