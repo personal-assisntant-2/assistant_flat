@@ -73,9 +73,11 @@ def add_contact(request):
         abonent = Abonent.objects.create(
             owner_id=request.user.id,
             name=data['name'][0],
-            birthday=data['birthday'][0],
             address=data['address'][0])
-        
+        if data['birthday'][0]:
+            abonent.birthday = data['birthday'][0]
+            abonent.save()
+
         # создаются записи в Phone
         create_phones(abonent=abonent,
                     out_phones=data['phone'] )
@@ -128,11 +130,16 @@ def edit_contact(request, pk):
         
         # апдейтится запись в Аbonent
         
-        Abonent.objects.update_or_create(id = pk, defaults = {
-                              'name': data['name'][0],
-                              'birthday': data['birthday'][0],
-                              'address': data['address'][0]})
-        
+        #Abonent.objects.update_or_create(id = pk, defaults = {
+        #                      'name': data['name'][0],
+        #                      'address': data['address'][0]})
+        abonent = Abonent.objects.get(id=pk)
+        abonent.name =  data['name'][0]
+        abonent.address = data['address'][0]
+        if data['birthday'][0]:
+            abonent.birthday = data['birthday'][0]
+        abonent.save()
+
         # апдейтятся записи в Phone
         update_phones(abonent=context['abonent'],
                     in_phones=context['phones'], 
@@ -171,7 +178,7 @@ def delete_contact(request, pk):
     return redirect(reverse('addressbook:home'))
 
 @login_required
-def birthdays(request, period=50):
+def birthdays(request, period=100):
 
     '''The first page  after authentication.
     There will be list of friends, 

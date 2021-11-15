@@ -65,14 +65,14 @@
                     <tr>
                         {% for email in emails %}
                         <td>
-                            <input id="email" value='{{email.email}}' size=30 name="email">
+                            <input  type = 'email' id="email" value='{{email.email}}' size=30 name="email">
                         </td>
                         {% endfor %}
                         <td>
                             <label for="new_email">Добавить email</label>
                         </td>
                         <td>
-                            <input id="new_email" size=30 name="new_email">
+                            <input type = 'email' id="new_email" size=30 name="new_email">
                         </td>
                     </tr>
                 </table>
