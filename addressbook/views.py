@@ -141,7 +141,7 @@ def edit_contact(request, pk):
         #print(data)
         # если нет имени, форма возвращается пустая
         if not data['name'][0]:
-            return redirect(reverse('addressbook:edit-contact'))
+            return redirect(reverse('addressbook:edit-contact',kwargs= {'pk' : context['abonent'].id }))
         
         # апдейтится запись в Аbonent
         
