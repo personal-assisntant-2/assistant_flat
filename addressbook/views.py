@@ -41,7 +41,6 @@ class AbonentDetailView(DetailView):
             abonent_id=context['abonent'].id)
         context['notes'] = Note.objects.filter(
             abonent_id=context['abonent'].id)
-        print('------list-', context)
         return context
 
 @login_required
@@ -115,7 +114,7 @@ def edit_contact(request, pk):
     context['abonent'] = Abonent.objects.get(id=pk)
     context['phones'] = Phone.objects.filter(abonent_id=pk)
     context['emails'] = Email.objects.filter(abonent_id=pk)
-    print('________', context)
+    #print('________', context)
     # список тегов нужен для автозаполнения(подсказки) в поле тегов
     tags = Tag.objects.all()
     context['tags'] = [tag.tag for tag in tags]
@@ -123,7 +122,7 @@ def edit_contact(request, pk):
         # считываем данные с реквеста и сразу записываем в словарь
         # иначе теряются телефоны, и почты, остается только один, из последного поля
         data = dict(request.POST)
-        print(data)
+        #print(data)
         # если нет имени, форма возвращается пустая
         if not data['name'][0]:
             return redirect(reverse('addressbook:edit-contact'))
@@ -163,10 +162,33 @@ def edit_contact(request, pk):
                         out_note=data['note'][0], 
                         in_tags=context['tags'],
                         out_tags=data['tag']  )
-        print(1)
+        #print(1)
         return redirect(reverse('addressbook:detail', kwargs= {'pk' : context['abonent'].id }))
-    print(2, '!!!!!!',context)
+    #print(2, '!!!!!!',context)
     return render(request, "addressbook/edit_contact.html", context)
+
+
+@login_required
+def add_note(request, pk):
+    context = {}
+    context['abonent'] = Abonent.objects.get(id=pk)
+    # список тегов нужен для автозаполнения(подсказки) в поле тегов
+    tags = Tag.objects.all()
+    context['tags'] = [tag.tag for tag in tags]
+    if request.method == 'POST':
+        # считываем данные с реквеста и сразу записываем в словарь
+        # иначе теряются телефоны, и почты, остается только один, из последного поля
+        data = dict(request.POST)
+        # Добавляем заметку в таблицу  Note
+        create_note(abonent=context['abonent'],
+                        out_note=data['note'][0], 
+                        in_tags=context['tags'],
+                        out_tags=data['tag']  )
+        #print(1)
+        return redirect(reverse('addressbook:detail', kwargs= {'pk' : context['abonent'].id }))
+    #print(2, '!!!!!!',context)
+    return render(request, "addressbook/add_note.html", context)
+
 
 @login_required
 def delete_contact(request, pk):

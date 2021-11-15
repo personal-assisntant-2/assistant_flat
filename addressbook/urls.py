@@ -12,5 +12,6 @@ urlpatterns = [
     path('home/', views.home, name = 'home'),
     path('detail/<int:pk>/', views.AbonentDetailView.as_view(), name='detail'),
     path('edit_contact/<int:pk>/', views.edit_contact, name='edit-contact'),
+    path('add_note/<int:pk>/', views.add_note, name='add-note'),
     path('birthdays/', views.birthdays, name = 'birthdays'),
 ]
