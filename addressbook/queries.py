@@ -77,26 +77,43 @@ def read_abonents(user, pattern: str = '', tags: list = [], date_start: date = N
     return results_patt_tags_date
 
 def get_date_month_day(period : int, owner)->List[Dict]:
+
+    def check_bd_between(bd:List[int],begin:List[int], end:List[int]):
+        return begin < bd < end
+    
     ''' query abonenets by date in the range 
     from today to plus 'period' days
     dates will compared as tuples(month , day)
     '''
     # даты будут сравниваться как кортежи (месяц, день)
-    date_begin = date.today()
-    date_end = date_begin + timedelta(days=period)
-    date_begin = (date_begin.month, date_begin.day)
-    date_end = (date_end.month, date_end.day)
+    begin = date.today()
+    end = begin + timedelta(days=period)
+    
 
-    abonents = Abonent.objects.filter(owner=owner,
-                                    birthday__isnull=False)
+    abonents = Abonent.objects.filter(owner=owner, 
+                                       birthday__isnull=False)
     abonents_list = []
     #  из полученного полного запроса переписываются в список только подходящие
     for abonent in abonents:
-        if date_begin < (abonent.birthday.month, abonent.birthday.day) < date_end:
+        date_begin = [begin.month, begin.day]
+        date_end = [end.month, end.day]
+        bd = [abonent.birthday.month, abonent.birthday.day]
+        
+        birthday_isbetween = False
+        if  date_begin[0] < date_end[0] :
+            birthday_isbetween = check_bd_between(bd, date_begin, date_end)
+        else:
+            date_end[0] += 12
+            birthday_isbetween = check_bd_between(bd, date_begin, date_end)
+            if not birthday_isbetween:
+                bd[0] += 12
+                birthday_isbetween = check_bd_between(bd, date_begin, date_end)
+            
+        if  birthday_isbetween:
             abonents_list.append({'pk': abonent.id,
                                 'name': abonent.name,
                                 'birthday': abonent.birthday,
-                                'short_bd': (abonent.birthday.month, abonent.birthday.day),
+                                'short_bd': bd,
                                 'str_bd': abonent.birthday.strftime('%A %d %B %Y')})
     # сортировка по (месяц, день)
     abonents_list.sort(key=lambda el: el['short_bd'])
