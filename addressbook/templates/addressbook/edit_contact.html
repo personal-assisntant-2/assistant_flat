@@ -85,56 +85,7 @@
             </td>
 
         </tr>
-        <tr>
-            <td>
-                <label for="note">Заметка</label>
-            </td>
-            <td>
-                <input id="note" name="note" size=80>
-            </td>
-            <td>
 
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="tag">Тэги</label>
-            </td>
-
-            <td>
-                <table>
-                    <tr>
-                        <td>
-                            <input id="tag" list='tags' name="tag" size=10>
-                            <datalist id='tags'>
-                                {%for el in tags%}
-                                <option value={{el}}>{{el}}</option>
-
-                                {%endfor%}
-                            </datalist>
-                        </td>
-                        <td>
-                            <input id="tag" list='tags' name="tag" size=10>
-                            <datalist id='tags'>
-                                {%for el in tags%}
-                                <option value={{el}}>{{el}}</option>
-
-                                {%endfor%}
-                            </datalist>
-                        </td>
-                        <td>
-                            <input id="tag" list='tags' name="tag" size=10>
-                            <datalist id='tags'>
-                                {%for el in tags%}
-                                <option value={{el}}>{{el}}</option>
-
-                                {%endfor%}
-                            </datalist>
-                        </td>
-                    </tr>
-                </table>
-        </tr>
     </table>
     <input class="btn btn-success" type=submit>
 </form>
