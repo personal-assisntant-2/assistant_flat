@@ -77,6 +77,7 @@ def read_abonents(user, pattern: str = '', tags: list = [], date_start: date = N
     return results_patt_tags_date
 
 def get_date_month_day(period : int, owner)->List[Dict]:
+    print('----def---', period, type(period))
 
     def check_bd_between(bd:List[int],begin:List[int], end:List[int]):
         return begin < bd < end
@@ -89,7 +90,8 @@ def get_date_month_day(period : int, owner)->List[Dict]:
     begin = date.today()
     end = begin + timedelta(days=period)
     
-
+    print(begin)
+    print(end)
     abonents = Abonent.objects.filter(owner=owner, 
                                        birthday__isnull=False)
     abonents_list = []
@@ -97,10 +99,11 @@ def get_date_month_day(period : int, owner)->List[Dict]:
     for abonent in abonents:
         date_begin = [begin.month, begin.day]
         date_end = [end.month, end.day]
+        
         bd = [abonent.birthday.month, abonent.birthday.day]
         
         birthday_isbetween = False
-        if  date_begin[0] < date_end[0] :
+        if  date_begin[0] <= date_end[0] :
             birthday_isbetween = check_bd_between(bd, date_begin, date_end)
         else:
             date_end[0] += 12

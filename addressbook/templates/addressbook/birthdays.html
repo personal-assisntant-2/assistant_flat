@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block main_title %}Список ближайших именинников {% endblock %}
+{% block main_title %}
+    <form action="{% url 'addressbook:birthdays' %}" method="post">
+        {% csrf_token %}
+        Список ближайших именинников на
+            <input type = 'number' name="period" value='{{period}}' style = "width:100px">
+                
+        дней
+    </form>
+
+{% endblock %}
+
 {% block content %}
 <table class="table">
 {% for abonent in abonents%}
