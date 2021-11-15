@@ -50,7 +50,7 @@ class TestAuthUser(BaseAddressbookTest):
 
     def test_login_user(self):
         user = User.objects.create_user('boss', 'lennon@thebeatles.com', '111')
-        boss = User.objects.get(id= 1)
+        boss = User.objects.get(id= user.id)
         response = self.client.post(reverse('login'), {'username' : 'boss', 'password' : '111'})
         self.assertEqual(response.status_code, 302)
         self.assertURLEqual(
