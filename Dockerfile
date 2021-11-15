@@ -1,11 +1,9 @@
 # syntax=docker/dockerfile:1
-# Указывает Docker использовать официальный образ python 3 с dockerhub в качестве базового образа
-FROM python:3
-# Устанавливает рабочий каталог контейнера — "app"
-WORKDIR /app
-# Копирует requirements.txt
-COPY requirements.txt requirements.txt
-# Запускает команду pip install для всех библиотек, перечисленных в requirements.txt
+FROM python:3.9
+ENV PYTHONUNBUFFERED=1
+WORKDIR /code
+COPY requirements.txt /code/
 RUN pip install -r requirements.txt
-# Копируем все файлы в рабочий каталог
-COPY . .
+COPY . /code/
+EXPOSE 8000
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

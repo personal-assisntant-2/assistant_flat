@@ -1,0 +1,6 @@
+ASSISTANT_PASS=first_team_pass
+ASSISTANT_SECRET_KEY=django-insecure-m7vvj09#=mcg5gb1_p#n(n7pdusd%vw#7yj31uh2zrx4q-qieb
+NAME_DB=assistant_abonent
+USER_DB=assistant
+HOST_DB=81.17.140.55
+PORT_DB=5432
