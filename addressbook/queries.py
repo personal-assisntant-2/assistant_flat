@@ -2,6 +2,10 @@ from typing import List, Dict
 from .models import Abonent, Phone, Email, Note, Tag
 from django.db.models import Q
 from datetime import date, timedelta
+from django import forms
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.shortcuts import render
 
 
 # , date_min: date = None, date_max: date = None
@@ -121,3 +125,23 @@ def get_date_month_day(period : int, owner)->List[Dict]:
     # сортировка по (месяц, день)
     abonents_list.sort(key=lambda el: el['short_bd'])
     return abonents_list
+
+
+def invalid_emails(request, context: dict):
+    """
+    Checks the validity of the email, if the validation is successful it returns None, and if it fails - None.
+    """
+    f = forms.EmailField()
+    try:
+        for email in context['email']:
+            if email:
+                f.clean(email)
+
+        # если добавлен новый email, вернется list с этим элементом
+        new_email = context.get('new_email')
+        if new_email:
+            f.clean(new_email[0])
+
+    except ValidationError:
+        messages.add_message(request, messages.ERROR, 'Enter a valid email address.')
+        return True
