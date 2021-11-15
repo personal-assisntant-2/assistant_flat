@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block main_title %}
+Подробнее об {{abonent.name}}
+{% endblock %}
+
 {% block content %}
 <style type="text/css">
 .blok {
@@ -12,23 +16,10 @@
 }
 </style>
 
-{% block main_title %}
-Подробнее об {{abonent.name}}
-{% endblock %}
-<table>
-  <tr>
-    <td>
 <a href='{% url "addressbook:edit-contact" abonent.pk %}'>
   <button type="button" class="btn btn-outline-primary">Изменить данные контакта</button>
 </a>
-</td>
-<td>
-<a href='{% url "addressbook:add-note" abonent.pk %}'>
-  <button type="button" class="btn btn-outline-primary">Добавить заметку для контакта</button>
-</a>
-</td>
-</tr>
-</table>
+
 <table class="table">
   <tr> 
     <td>Имя</td>

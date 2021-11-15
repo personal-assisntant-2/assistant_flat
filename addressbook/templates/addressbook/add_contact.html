@@ -6,6 +6,12 @@
 {% endblock %}
 
 {% block content %}
+
+{% for message in messages %}
+    <li
+            {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+    </li>
+{% endfor %}
 <form action="{% url 'addressbook:add-contact' %}" method='post'>
     {% csrf_token %}
 
@@ -14,41 +20,41 @@
 
             <li class="mb-3">
                 <label for="name">Полное имя</label>
-                <input id="name" name="name">
+                <input id="name" value="{{ name.0 }}" name="name">
             </li>
 
             <li class="mb-3">
                 <label for="birthday">День рождения</label>
-                <input type='date' id="birthday" name="birthday">
+                <input type='date' id="birthday" value="{{ birthday.0 }}" name="birthday">
             </li>
             <li class="mb-3">
                 <label for="address">Адрес</label>
-                <input id="address" name="address">
+                <input id="address" value="{{ address.0 }}" name="address">
             </li>
 
             <li class="mb-3">
                 <label for="phone">Телефоны</label>
-                <input id="phone" name="phone">
-                <input id="phone" name="phone">
-                <input id="phone" name="phone">
+                <input id="phone" value="{{ phone.0 }}" name="phone">
+                <input id="phone" value="{{ phone.1 }}" name="phone">
+                <input id="phone" value="{{ phone.2 }}" name="phone">
             </li>
             <li class="mb-3">
                 <label for="email">Emails</label>
-                <input type = 'email' id="email" name="email">
-                <input type = 'email' id="email" name="email">
-                <input type = 'email' id="email" name="email">
+                <input id="email" value="{{ email.0 }}"  name="email">
+                <input id="email" value="{{ email.1 }}" name="email">
+                <input id="email" value="{{ email.2 }}" name="email">
             </li>
             <li class="mb-3">
                 <label for="note">Заметка</label>
-                <input id="note" name="note">
+                <input id="note" value="{{ note.0 }}" name="note">
                 <label for="tag">Тэги</label>
-                <input id="tag" list='tags' name="tag">
+                <input id="tag" list='tags' value="{{ tag.0 }}" name="tag">
                 <datalist id='tags'>
                     {%for el in tags%}
                     <option value={{el}}>{{el}}</option>
                     {%endfor%}
                 </datalist>
-                <input id="tag" list='tags' name="tag">
+                <input id="tag" list='tags' value="{{ tag.1 }}" name="tag">
                 <datalist id='tags'>
                     {%for el in tags%}
                     <option value={{el}}>{{el}}</option>
