@@ -4,6 +4,7 @@
 @login_required 
  @login_required(login_url='auth:login')
 '''
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
@@ -11,6 +12,8 @@ from django.template import loader
 from django.views.generic.detail import DetailView
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django import forms
+from django.contrib import messages
 
 
 from .forms import AbonentEditForm, FindContactsForm
@@ -65,32 +68,45 @@ def add_contact(request):
         # считываем данные с реквеста и сразу записываем в словарь
         # иначе теряются телефоны, и почты, остается только один, из последного поля
         data = dict(request.POST)
+        print(',,,,,data', request.POST)
         # если нет имени, форма возвращается пустая
         if not data['name'][0]:
             return redirect(reverse('addressbook:add-contact'))
 
-        # создается запись в Аbonent
-        abonent = Abonent.objects.create(
-            owner_id=request.user.id,
-            name=data['name'][0],
-            birthday=data['birthday'][0],
-            address=data['address'][0])
-        
-        # создаются записи в Phone
-        create_phones(abonent=abonent,
-                    out_phones=data['phone'] )
-        
-        # создаются записи в Email
-        create_emails(abonent=abonent,
-                    out_emails=data['email'] )
-        
-        # Добавляем заметку в таблицу  Note
-        create_note(abonent=abonent,
-                        out_note=data['note'][0], 
-                        in_tags=context['tags'],
-                        out_tags=data['tag']  )
+        # валидация введенных emails
+        f = forms.EmailField()
+        try:
+            for email in data['email']:
+                if email:
+                    f.clean(email)
+        except ValidationError as error:
+            messages.add_message(request, messages.ERROR, 'Enter a valid email address.')
+            context.update(data)
+            return render(request, 'addressbook/add_contact.html', context)
 
-        return redirect(reverse('addressbook:detail', kwargs= {'pk' : abonent.id }))
+        else:
+            # создается запись в Аbonent
+            abonent = Abonent.objects.create(
+                owner_id=request.user.id,
+                name=data['name'][0],
+                birthday=data['birthday'][0],
+                address=data['address'][0])
+
+            # создаются записи в Email
+            create_emails(abonent=abonent,
+                          out_emails=data['email'])
+
+            # создаются записи в Phone
+            create_phones(abonent=abonent,
+                        out_phones=data['phone'])
+
+            # Добавляем заметку в таблицу  Note
+            create_note(abonent=abonent,
+                            out_note=data['note'][0],
+                            in_tags=context['tags'],
+                            out_tags=data['tag'])
+
+            return redirect(reverse('addressbook:detail', kwargs= {'pk' : abonent.id }))
     
     return render(request, 'addressbook/add_contact.html', context)
 
@@ -107,16 +123,13 @@ def edit_contact(request, pk):
                 add new email
                 change email
                 delete email
-                add new note
     '''
     context = {}
     context['abonent'] = Abonent.objects.get(id=pk)
     context['phones'] = Phone.objects.filter(abonent_id=pk)
     context['emails'] = Email.objects.filter(abonent_id=pk)
     print('________', context)
-    # список тегов нужен для автозаполнения(подсказки) в поле тегов
-    tags = Tag.objects.all()
-    context['tags'] = [tag.tag for tag in tags]
+
     if request.method == 'POST':
         # считываем данные с реквеста и сразу записываем в словарь
         # иначе теряются телефоны, и почты, остается только один, из последного поля
@@ -150,15 +163,9 @@ def edit_contact(request, pk):
          # создание нового email  из списка new_email
         create_emails(abonent=context['abonent'],
                     out_emails=data['new_email'] )
-        
-        # Добавляем заметку в таблицу  Note
-        create_note(abonent=context['abonent'],
-                        out_note=data['note'][0], 
-                        in_tags=context['tags'],
-                        out_tags=data['tag']  )
-        print(1)
+
         return redirect(reverse('addressbook:detail', kwargs= {'pk' : context['abonent'].id }))
-    print(2, '!!!!!!',context)
+    print(2, '!!!!!!', context)
     return render(request, "addressbook/edit_contact.html", context)
 
 @login_required

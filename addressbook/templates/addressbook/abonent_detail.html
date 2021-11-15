@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block main_title %} Подробнее об {{abonent.name}} {% endblock %}
+
 {% block content %}
 <style type="text/css">
 .blok {
@@ -11,10 +13,6 @@
   margin: 20px 0;
 }
 </style>
-
-{% block main_title %}
-Подробнее об {{abonent.name}}
-{% endblock %}
 
 <a href='{% url "addressbook:edit-contact" abonent.pk %}'>
   <button type="button" class="btn btn-outline-primary">Изменить данные контакта</button>
