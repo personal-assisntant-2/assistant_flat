@@ -2,6 +2,12 @@
 {% block content %}
 {% load static %}
 
+{% for message in messages %}
+    <li
+            {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+    </li>
+{% endfor %}
+
 <form action="{% url 'addressbook:edit-contact' abonent.pk  %}" method='post'>
     {% csrf_token %}
 
@@ -72,7 +78,7 @@
                             <label for="new_email">Добавить email</label>
                         </td>
                         <td>
-                            <input type = 'email' id="new_email" size=30 name="new_email">
+                            <input type = 'email' id="new_email" size=30 value='{{new_email.0}}' name="new_email">
                         </td>
                     </tr>
                 </table>

@@ -4,7 +4,6 @@
 @login_required 
  @login_required(login_url='auth:login')
 '''
-from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
@@ -12,13 +11,11 @@ from django.template import loader
 from django.views.generic.detail import DetailView
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django import forms
-from django.contrib import messages
 
 
 from .forms import AbonentEditForm, FindContactsForm
 from .models import Abonent, Phone, Email, Note, Tag
-from .queries import read_abonents, get_date_month_day
+from .queries import read_abonents, get_date_month_day, invalid_emails
 from .creating import create_phones, create_emails, create_note
 from .updating import update_phones, update_emails
 
@@ -73,16 +70,10 @@ def add_contact(request):
             return redirect(reverse('addressbook:add-contact'))
 
         # валидация введенных emails
-        f = forms.EmailField()
-        try:
-            for email in data['email']:
-                if email:
-                    f.clean(email)
-        except ValidationError as error:
-            messages.add_message(request, messages.ERROR, 'Enter a valid email address.')
-            context.update(data)
+        context.update(data)
+        if invalid_emails(request, context):
+            # все ранее введенные данные в форме сохраняются
             return render(request, 'addressbook/add_contact.html', context)
-
         else:
             # создается запись в Аbonent
             abonent = Abonent.objects.create(
@@ -164,12 +155,17 @@ def edit_contact(request, pk):
         create_phones(abonent=context['abonent'],
                     out_phones=data['new_phone'] )
 
-        # апдейтятся записи в Email
-        update_emails(abonent=context['abonent'],
-                    in_emails=context['emails'], 
-                    out_emails=data.get('email',[]) )
+        # валидация введенных emails
+        context.update(data)
+        if invalid_emails(request, context):
+            return render(request, 'addressbook/edit_contact.html', context)
+        else:
+            # апдейтятся записи в Email
+            update_emails(abonent=context['abonent'],
+                        in_emails=context['emails'],
+                        out_emails=data.get('email',[]) )
         
-         # создание нового email  из списка new_email
+        # создание нового email  из списка new_email
         create_emails(abonent=context['abonent'],
                     out_emails=data['new_email'] )
         
@@ -285,3 +281,5 @@ def find_contacts(request):
         form = FindContactsForm()
 
     return render(request, "addressbook/find-contacts.html", {'form': form})
+
+
