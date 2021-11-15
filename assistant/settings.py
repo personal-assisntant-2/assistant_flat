@@ -18,7 +18,11 @@ import django_heroku
 
 load_dotenv()
 
-PASS = environ['ASSISTANT_PASS']
+PASS_DB = environ['ASSISTANT_PASS']
+NAME_DB = environ['NAME_DB']
+USER_DB = environ['USER_DB']
+HOST_DB = environ['HOST_DB']
+PORT_DB = environ['PORT_DB']
 SECRET_KEY = environ['ASSISTANT_SECRET_KEY']
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -87,11 +91,11 @@ WSGI_APPLICATION = 'assistant.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'assistant_abonent',
-        'USER': 'assistant',
-        'PASSWORD': PASS,
-        'HOST': '81.17.140.55',
-        'PORT': '5432',
+        'NAME': NAME_DB,
+        'USER': USER_DB,
+        'PASSWORD': PASS_DB,
+        'HOST': HOST_DB,
+        'PORT': PORT_DB,
         'TIME_ZONE': 'Europe/Kiev',
         'OPTIONS': {'connect_timeout': 1},
     }
