@@ -200,7 +200,7 @@ def delete_contact(request, pk):
     return redirect(reverse('addressbook:home'))
 
 @login_required
-def birthdays(request, period=100):
+def birthdays(request, period=7):
 
     '''The first page  after authentication.
     There will be list of friends, 
@@ -210,9 +210,20 @@ def birthdays(request, period=100):
     # даты будут сравниваться как кортежи (месяц, день)
     abonents_list = get_date_month_day(period, owner = request.user)
     
-    content = { 'abonents': abonents_list,  }
+    context = { 'abonents': abonents_list, 
+                'period' : period}
+    
+    if request.method == 'POST':
+        period = int(request.POST['period'])
+        print('-period-', period)
 
-    return render(request, 'addressbook/birthdays.html', content)
+    abonents_list = get_date_month_day(period, owner = request.user)
+    context = { 'abonents': abonents_list, 
+                'period' : period}
+    #print('-abonent_list-', abonents_list)
+    #return redirect(reverse('addressbook:birthdays'), kwargs= {'context' : context})
+    
+    return render(request, 'addressbook/birthdays.html', context)
 
 @login_required
 def home(request):
