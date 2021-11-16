@@ -11,5 +11,3 @@ class UploadFileForm(forms.Form):
         validators=[file_size],
         label='Upload file'
     )
-
-
