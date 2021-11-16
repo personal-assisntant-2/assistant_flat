@@ -132,15 +132,20 @@ def invalid_emails(request, context: dict):
     Checks the validity of the email, if the validation is successful it returns None, and if it fails - None.
     """
     f = forms.EmailField()
+    print('.....context)', context)
     try:
-        for email in context['email']:
-            if email:
-                f.clean(email)
+        if context.get('email'):
+            for email in context['email']:
+                if email:
+                    f.clean(email)
 
         # если добавлен новый email, вернется list с этим элементом
         new_email = context.get('new_email')
+        print('!!!!!!!!!new_email', new_email)
+
         if new_email:
-            f.clean(new_email[0])
+            if new_email[0]:
+                f.clean(new_email[0])
 
     except ValidationError:
         messages.add_message(request, messages.ERROR, 'Enter a valid email address.')
