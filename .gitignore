@@ -219,4 +219,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+#env-variable for docker
+env_docker
+
 # End of https://www.toptal.com/developers/gitignore/api/python,linux,windows,venv,visualstudiocode
