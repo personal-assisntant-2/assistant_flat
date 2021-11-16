@@ -122,14 +122,12 @@ def edit_contact(request, pk):
     context['phones'] = Phone.objects.filter(abonent_id=pk)
     context['emails'] = Email.objects.filter(abonent_id=pk)
     #print('________', context)
-    # список тегов нужен для автозаполнения(подсказки) в поле тегов
-    tags = Tag.objects.all()
-    context['tags'] = [tag.tag for tag in tags]
+
     if request.method == 'POST':
         # считываем данные с реквеста и сразу записываем в словарь
         # иначе теряются телефоны, и почты, остается только один, из последного поля
         data = dict(request.POST)
-        #print(data)
+
         # если нет имени, форма возвращается пустая
         if not data['name'][0]:
             return redirect(reverse('addressbook:edit-contact',kwargs= {'pk' : context['abonent'].id }))
@@ -155,26 +153,20 @@ def edit_contact(request, pk):
         create_phones(abonent=context['abonent'],
                     out_phones=data['new_phone'] )
 
-        # валидация введенных emails
+        # валидация введенных Emails
         context.update(data)
         if invalid_emails(request, context):
             return render(request, 'addressbook/edit_contact.html', context)
-        else:
-            # апдейтятся записи в Email
-            update_emails(abonent=context['abonent'],
-                        in_emails=context['emails'],
-                        out_emails=data.get('email',[]) )
+
+        # апдейтятся записи в Email
+        update_emails(abonent=context['abonent'],
+                    in_emails=context['emails'],
+                    out_emails=data.get('email',[]) )
         
         # создание нового email  из списка new_email
         create_emails(abonent=context['abonent'],
                     out_emails=data['new_email'] )
-        
-        # Добавляем заметку в таблицу  Note
-        create_note(abonent=context['abonent'],
-                        out_note=data['note'][0], 
-                        in_tags=context['tags'],
-                        out_tags=data['tag']  )
-        #print(1)
+
         return redirect(reverse('addressbook:detail', kwargs= {'pk' : context['abonent'].id }))
     #print(2, '!!!!!!',context)
     return render(request, "addressbook/edit_contact.html", context)

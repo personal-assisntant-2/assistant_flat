@@ -75,32 +75,6 @@ def file_delete_view(request, file_id):
     return redirect(reverse('file_manager:file'))
 
 
-# def create_list_files_with_categories(list_files) -> list:
-#     """
-#     Creates an additional category field in the file list.
-#     :param list_files: <class 'django.db.models.query.QuerySet'>
-#     """
-#     list_files_with_categories = []
-#
-#     # iteration QuerySet
-#     for elem in list_files:
-#         other_cat = None
-#         elem.category = None
-#         for name_category, extensions in FORMATS.items():
-#             # if file extension in list extensions with key name_category
-#             if elem.extension in extensions:
-#                 elem.category = name_category
-#             #
-#             if len(extensions) == 0:
-#                 other_cat = name_category
-#
-#         if not elem.category:
-#             elem.category = other_cat
-#         list_files_with_categories.append(elem)
-#
-#     return list_files_with_categories
-
-
 def generates_list_of_files_by_category(selected_category: str, user) -> list:
     """
     Generates list of files by category.
