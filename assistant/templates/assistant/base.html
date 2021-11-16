@@ -75,14 +75,10 @@
 
             {% if request.resolver_match.url_name not in 'news, dashboard, login, register' %}
             <div class="dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link" href="#" style="cursor: default;" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     {{user.username}}
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <li>
-                        <a class="dropdown-item"  href="{% url 'password_change' %}">Change password</a>
-                    </li>
-                </ul>
+
             </div>
             {% endif %}
 
@@ -122,3 +118,10 @@
         integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
         crossorigin="anonymous"></script>
 </body>
+
+
+<!--                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">-->
+<!--                    <li>-->
+<!--                        <a class="dropdown-item"  href="{% url 'password_change' %}">Change password</a>-->
+<!--                    </li>-->
+<!--                </ul>-->

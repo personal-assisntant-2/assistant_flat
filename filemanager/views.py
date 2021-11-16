@@ -1,15 +1,21 @@
+"""
+The module allows you to manage files, namely:
+1.download (limited to 2 MiB);
+2. sort by categories (depending on the extension, the category is determined);
+3. download;
+4. delete.
+"""
 import mimetypes
-
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from django.contrib import messages
 
+from .api import create_uploaded_file, normalize
 from .forms import UploadFileForm
 from .models import UploadedFiles
-from .api import create_uploaded_file, normalize
 from .settings import FORMATS
 
 
@@ -30,9 +36,8 @@ def file_manager_view(request):
             messages.add_message(request, messages.INFO, 'File was uploaded successfully!')
             return redirect(reverse('file_manager:file'))
 
-        else:
-            messages.add_message(request, messages.ERROR, form.errors['file'])
-            return render(request, 'file_manager/file.html', {'form': form})
+        messages.add_message(request, messages.ERROR, form.errors['file'])
+        return render(request, 'file_manager/file.html', {'form': form})
 
     # Displays a file upload form and a list of uploaded files
     form = UploadFileForm()
@@ -70,6 +75,9 @@ def file_download_view(request, file_id):
 
 @login_required
 def file_delete_view(request, file_id):
+    """
+    The function deletes the file.
+    """
     file = get_object_or_404(UploadedFiles, pk=file_id, user=request.user)
     file.delete()
     return redirect(reverse('file_manager:file'))
@@ -82,9 +90,16 @@ def generates_list_of_files_by_category(selected_category: str, user) -> list:
     # Displays a list by SOME category
     if selected_category:
         if selected_category == 'Others':
-            list_files = UploadedFiles.objects.filter(user=user).exclude(extension__in=join_exist_extensions())
+            list_files = UploadedFiles.objects.filter(
+                user=user
+            ).exclude(
+                extension__in=join_exist_extensions()
+            )
         elif selected_category in FORMATS:
-            list_files = UploadedFiles.objects.filter(user=user, extension__in=FORMATS[selected_category])
+            list_files = UploadedFiles.objects.filter(
+                user=user,
+                extension__in=FORMATS[selected_category]
+            )
         # if the selected category does not exist
         else:
             list_files = []
@@ -107,7 +122,7 @@ def join_exist_extensions() -> list:
     return exist_extensions
 
 
-def handle_uploaded_file(f, user):
+def handle_uploaded_file(uploaded_file, user):
     """
     Reading and writing file in database.
     :param f: InMemoryUploadedFile.
@@ -115,14 +130,13 @@ def handle_uploaded_file(f, user):
     """
     file = b''
     # Reading file
-    for chunk in f.chunks():
+    for chunk in uploaded_file.chunks():
         file += chunk
 
-    name: str = f.name
-    extension: str = f.name.split('.')[-1]
-    size: int = f.size
+    name: str = uploaded_file.name
+    extension: str = uploaded_file.name.split('.')[-1]
+    size: int = uploaded_file.size
 
     # Writing file
     with transaction.atomic():
         create_uploaded_file(name, extension, file, user, size)
-
