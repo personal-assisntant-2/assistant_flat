@@ -13,7 +13,6 @@ gunicorn = "*"
 django-heroku = "*"
 
 [dev-packages]
-black = "*"
 pylint = "*"
 
 [requires]
