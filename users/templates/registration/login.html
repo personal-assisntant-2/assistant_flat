@@ -9,8 +9,8 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input class="btn btn-success" type="submit" value="Login">
+    <input class="btn btn-success" type="submit" value="ok">
 </form>
 
-<a class="btn btn-link mt-3" href="{% url 'dashboard' %}">Back to dashboard</a>
+<a class="btn btn-link mt-3" href="{% url 'dashboard' %}">Back invitation page</a>
 {% endblock %}
