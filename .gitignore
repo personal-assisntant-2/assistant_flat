@@ -2,6 +2,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,linux,windows,venv,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,linux,windows,venv,visualstudiocode
 
+.pylintrc
 ### Linux ###
 *~
 

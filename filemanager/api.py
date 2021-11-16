@@ -1,9 +1,12 @@
-from .models import UploadedFiles
 from django.core.exceptions import ValidationError
+from .models import UploadedFiles
 
 
-def create_uploaded_file(name: str, extension: str, file: bytes, user, size: int) -> UploadedFiles:
-    uploaded_file = UploadedFiles.objects.create(
+def create_uploaded_file(name: str, extension: str, file: bytes, user, size: int ) -> UploadedFiles:
+    """
+    Writing to the database of the uploaded file.
+    """
+    UploadedFiles.objects.create(
             name=name,
             extension=extension,
             file=file,
@@ -19,12 +22,13 @@ def normalize(text: str) -> str:
     """
     cyrillic = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'
     latin = ['a', 'b', 'v', 'g', 'd', 'e', 'ye', 'zh', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o',
-             'p', 'r', 's', 't', 'u', 'f', 'kh', 'ts', 'ch', 'sh', 'shch', '', 'y', '', 'e', 'yu', 'ya']
+             'p', 'r', 's', 't', 'u', 'f', 'kh', 'ts', 'ch', 'sh', 'shch', '', 'y', '', 'e',
+             'yu', 'ya']
 
-    translit_dict = dict()
-    for c, l in zip(cyrillic, latin):
-        translit_dict[ord(c)] = l
-        translit_dict[ord(c.upper())] = l.upper()
+    translit_dict = {}
+    for cyr, lat in zip(cyrillic, latin):
+        translit_dict[ord(cyr)] = lat
+        translit_dict[ord(cyr.upper())] = lat.upper()
     translated_text = text.translate(translit_dict)
 
     return translated_text

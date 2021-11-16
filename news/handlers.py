@@ -1,5 +1,9 @@
-import aiohttp
+"""
+With the help of the client session (aiohttp), 3 requests are sent at once to each server.
+There are 3 servers in total.
+"""
 import asyncio
+import aiohttp
 import humanize
 
 # client timeout, total number of seconds for the whole request.
@@ -33,7 +37,10 @@ async def client_myfin(list_url):
     """
     timeout = aiohttp.ClientTimeout(total=TIMEOUT)
 
-    async with aiohttp.ClientSession(timeout=timeout, connector=aiohttp.TCPConnector(limit=64, ssl=False)) as session:
+    async with aiohttp.ClientSession(
+            timeout=timeout,
+            connector=aiohttp.TCPConnector(limit=64, ssl=False)
+    ) as session:
         # formation of a list of tasks
         requests = [requests_course_myfin(session, url) for url in list_url]
         # run the tasks and get the result
@@ -69,7 +76,10 @@ async def client_bitinfo(list_url):
     """
     timeout = aiohttp.ClientTimeout(total=TIMEOUT)
 
-    async with aiohttp.ClientSession(timeout=timeout, connector=aiohttp.TCPConnector(limit=64, ssl=False)) as session:
+    async with aiohttp.ClientSession(
+            timeout=timeout,
+            connector=aiohttp.TCPConnector(limit=64, ssl=False)
+    ) as session:
         # formation of a list of tasks
         requests = [requests_course_bitinfo(session, url) for url in list_url]
         # run the tasks and get the result
@@ -105,7 +115,10 @@ async def client_bitstat(list_url):
     """
     timeout = aiohttp.ClientTimeout(total=TIMEOUT)
 
-    async with aiohttp.ClientSession(timeout=timeout, connector=aiohttp.TCPConnector(limit=64, ssl=False)) as session:
+    async with aiohttp.ClientSession(
+            timeout=timeout,
+            connector=aiohttp.TCPConnector(limit=64, ssl=False)
+    ) as session:
         # formation of a list of tasks
         requests = [requests_course_bitstat(session, url) for url in list_url]
         # run the tasks and get the result
@@ -118,7 +131,7 @@ def handler_result(results):
     """
     Iterates over the answers, checks if the answer is of type Exception, then replaces it with "".
     """
-    result_no_exception = list()
+    result_no_exception = []
     for result in results:
         if isinstance(result, Exception):
             result_no_exception.append('')

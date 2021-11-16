@@ -1,5 +1,4 @@
 import functools
-
 from .handlers import client_bitinfo, client_bitstat, client_myfin
 
 
@@ -16,8 +15,8 @@ URL_BITCOINCASH_BITSTAT = 'https://bitstat.top/coin.php?id_coin=11'
 
 
 # LIST URL in this order: ['bitcoin', 'ethereum', 'bitcoin_cash']!!!
-# functools.partial(func, *args, **keywords) - returns a partial-object (in fact, a function), which when called is
-# called as a 'func', but the arguments are passed there.
+# functools.partial(func, *args, **keywords) - returns a partial-object (in fact, a function),
+# which when called is called as a 'func', but the arguments are passed there.
 # 'func' - coroutine.
 handlers = {
     'rates_bitstat': functools.partial(
@@ -42,4 +41,3 @@ handlers = {
         ]
     ),
 }
-

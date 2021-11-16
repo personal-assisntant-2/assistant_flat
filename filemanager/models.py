@@ -20,12 +20,14 @@ class UploadedFiles(models.Model):
     @property
     def category(self):
         """
-        File property, depending on the extension, sets the category according to the FORMATS dictionary.
+        File property, depending on the extension, sets the category according to the
+        FORMATS dictionary.
         """
         category = None
         for name_category, extensions in FORMATS.items():
 
-            # if self.extension in list extensions with key name_category,the category name is assigned.
+            # if self.extension in list extensions with key name_category,
+            # the category name is assigned.
             if self.extension in extensions:
                 category = name_category
 
