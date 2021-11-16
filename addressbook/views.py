@@ -1,26 +1,16 @@
+'''.env'''
 
-'''from django.contrib.auth.decorators import login_required
-
-@login_required 
- @login_required(login_url='auth:login')
-'''
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+
 from django.urls import reverse
-from django.template import loader
 from django.views.generic.detail import DetailView
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
-
-from .forms import AbonentEditForm, FindContactsForm
+from .forms import FindContactsForm
 from .models import Abonent, Phone, Email, Note, Tag
 from .queries import read_abonents, get_date_month_day, invalid_emails
 from .creating import create_phones, create_emails, create_note
 from .updating import update_phones, update_emails
-
-from datetime import date, timedelta
-
 
 class AbonentDetailView(DetailView):
     """built-in view
@@ -74,31 +64,30 @@ def add_contact(request):
         if invalid_emails(request, context):
             # все ранее введенные данные в форме сохраняются
             return render(request, 'addressbook/add_contact.html', context)
-        else:
-            # создается запись в Аbonent
-            abonent = Abonent.objects.create(
-                owner_id=request.user.id,
-                name=data['name'][0],
-                address=data['address'][0])
-            if data['birthday'][0]:
-                abonent.birthday = data['birthday'][0]
-                abonent.save()
+        # создается запись в Аbonent
+        abonent = Abonent.objects.create(
+            owner_id=request.user.id,
+            name=data['name'][0],
+            address=data['address'][0])
+        if data['birthday'][0]:
+            abonent.birthday = data['birthday'][0]
+            abonent.save()
 
-            # создаются записи в Phone
-            create_phones(abonent=abonent,
-                          out_phones=data['phone'])
+        # создаются записи в Phone
+        create_phones(abonent=abonent,
+                        out_phones=data['phone'])
 
-            # создаются записи в Email
-            create_emails(abonent=abonent,
-                          out_emails=data['email'])
+        # создаются записи в Email
+        create_emails(abonent=abonent,
+                        out_emails=data['email'])
 
-            # Добавляем заметку в таблицу  Note
-            create_note(abonent=abonent,
-                        out_note=data['note'][0],
-                        in_tags=context['tags'],
-                        out_tags=data['tag'])
+        # Добавляем заметку в таблицу  Note
+        create_note(abonent=abonent,
+                    out_note=data['note'][0],
+                    in_tags=context['tags'],
+                    out_tags=data['tag'])
 
-            return redirect(reverse('addressbook:detail', kwargs={'pk': abonent.id}))
+        return redirect(reverse('addressbook:detail', kwargs={'pk': abonent.id}))
 
     return render(request, 'addressbook/add_contact.html', context)
 
@@ -130,13 +119,9 @@ def edit_contact(request, pk):
 
         # если нет имени, форма возвращается пустая
         if not data['name'][0]:
-            return redirect(reverse('addressbook:edit-contact',kwargs= {'pk' : context['abonent'].id }))
-        
+            return redirect(reverse('addressbook:edit-contact',
+                            kwargs= {'pk' : context['abonent'].id }))
         # апдейтится запись в Аbonent
-        
-        #Abonent.objects.update_or_create(id = pk, defaults = {
-        #                      'name': data['name'][0],
-        #                      'address': data['address'][0]})
         abonent = Abonent.objects.get(id=pk)
         abonent.name =  data['name'][0]
         abonent.address = data['address'][0]
@@ -146,9 +131,8 @@ def edit_contact(request, pk):
 
         # апдейтятся записи в Phone
         update_phones(abonent=context['abonent'],
-                    in_phones=context['phones'], 
+                    in_phones=context['phones'],
                     out_phones=data.get('phone', []) )
-        
         # создание нового телефона из списка new_phone
         create_phones(abonent=context['abonent'],
                     out_phones=data['new_phone'] )
@@ -162,7 +146,6 @@ def edit_contact(request, pk):
         update_emails(abonent=context['abonent'],
                     in_emails=context['emails'],
                     out_emails=data.get('email',[]) )
-        
         # создание нового email  из списка new_email
         create_emails(abonent=context['abonent'],
                     out_emails=data['new_email'] )
@@ -174,6 +157,11 @@ def edit_contact(request, pk):
 
 @login_required
 def add_note(request, pk):
+    '''
+    handles the separate button
+    in template/abonent/detail
+    for add a note
+    '''
     context = {}
     context['abonent'] = Abonent.objects.get(id=pk)
     # список тегов нужен для автозаполнения(подсказки) в поле тегов
@@ -185,7 +173,7 @@ def add_note(request, pk):
         data = dict(request.POST)
         # Добавляем заметку в таблицу  Note
         create_note(abonent=context['abonent'],
-                        out_note=data['note'][0], 
+                        out_note=data['note'][0],
                         in_tags=context['tags'],
                         out_tags=data['tag']  )
         #print(1)
@@ -207,26 +195,21 @@ def delete_contact(request, pk):
 def birthdays(request, period=7):
 
     '''The first page  after authentication.
-    There will be list of friends, 
+    There will be list of friends,
     who has birthday in the near future
     ordered
     '''
     # даты будут сравниваться как кортежи (месяц, день)
     abonents_list = get_date_month_day(period, owner = request.user)
-    
-    context = { 'abonents': abonents_list, 
+    context = { 'abonents': abonents_list,
                 'period' : period}
-    
     if request.method == 'POST':
         period = int(request.POST['period'])
         print('-period-', period)
 
     abonents_list = get_date_month_day(period, owner = request.user)
-    context = { 'abonents': abonents_list, 
+    context = { 'abonents': abonents_list,
                 'period' : period}
-    #print('-abonent_list-', abonents_list)
-    #return redirect(reverse('addressbook:birthdays'), kwargs= {'context' : context})
-    
     return render(request, 'addressbook/birthdays.html', context)
 
 @login_required
@@ -251,10 +234,10 @@ def find_contacts(request):
         - после какой-то даты (включая ее)
         - между какими-то датами (включая эти даты)
     - тэги (при поиске просматирваются поля "tag" привязанные к note)
-    Если при поиске введено несколько поисковых атрибутов, то модель 
+    Если при поиске введено несколько поисковых атрибутов, то модель
     поиска "<атрибут 1> and <атрибут 2> and <атрибут 3>"
-    Результат поиска в виде списка соовествующих записей в кратком представлении 
-    (каждая запись - ссылка, при нажатии на которую осуществляется переход на страницу 
+    Результат поиска в виде списка соовествующих записей в кратком представлении
+    (каждая запись - ссылка, при нажатии на которую осуществляется переход на страницу
     записи с детальной информацией)
     """
     if request.method == 'POST':
@@ -264,8 +247,8 @@ def find_contacts(request):
             user = request.user
             print('user: ', user)
             abonents = read_abonents(user,
-                                     pattern=res['pattern'], tags=res['tags'], date_start=res['date_start'], date_stop=res['date_stop'])
-            print(abonents)
+                            pattern=res['pattern'], tags=res['tags'],
+                            date_start=res['date_start'], date_stop=res['date_stop'])
 
             content = {'form': form, 'abonents': abonents}
             return render(request, "addressbook/find-contacts.html", content)
@@ -273,5 +256,3 @@ def find_contacts(request):
         form = FindContactsForm()
 
     return render(request, "addressbook/find-contacts.html", {'form': form})
-
-
